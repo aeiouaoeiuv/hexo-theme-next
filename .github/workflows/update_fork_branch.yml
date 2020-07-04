@@ -1,0 +1,36 @@
+# vim: ts=2 sw=2 sts=2 et
+# This is a basic workflow to help you get started with Actions
+
+name: update_fork_branch
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: fork sync
+      uses: TobKed/github-forks-sync-action@master
+      with:
+        github_token: ${{ secrets.UPDATE_FORK_TOKEN }}
+        upstream_repository: theme-next/hexo-theme-next
+        target_repository: aeiouaoeiuv/hexo-theme-next
+        upstream_branch: master
+        target_branch: forked_branch
+        force: true
+        tags: true
+
